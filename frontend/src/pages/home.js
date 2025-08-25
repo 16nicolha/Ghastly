@@ -3,6 +3,18 @@ import { Link } from "react-router-dom";
 
 export default function Home() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [recommendations, setRecommendations] = useState([]);
+
+    const handleChoice = async (tier) => {
+        try {
+            const res = await fetch(`http://localhost:5000/recommendations?tier=${tier}`);
+            const data = await res.json();
+            setRecommendations(data);
+            setDropdownOpen(false);
+        } catch (err) {
+            console.error("Error fetching recommendations:", err);
+        }
+    };
 
     return (
         <div>
@@ -12,6 +24,7 @@ export default function Home() {
                 <div style={styles.links}>
                     <Link to="/Home" style={styles.link}>Home</Link>
                     <Link to="/Login" style={styles.link}>Login</Link>
+                    <Link to="/Signup" style={styles.link}>Signup</Link>
                 </div>
             </nav>
 
@@ -30,17 +43,27 @@ export default function Home() {
                 </button>
                 {dropdownOpen && (
                     <ul style={styles.dropdownMenu}>
-                        <li style={styles.dropdownItem}>Scary, but not too brutal</li>
-                        <li style={styles.dropdownItem}>I can handle more</li>
-                        <li style={styles.dropdownItem}>I want to be traumatized</li>
+                        <li style={styles.dropdownItem} onClick={() => handleChoice(1)}>Scary, but not too brutal</li>
+                        <li style={styles.dropdownItem} onClick={() => handleChoice(2)}>I can handle more</li>
+                        <li style={styles.dropdownItem} onClick={() => handleChoice(3)}>I want to be traumatized</li>
                     </ul>
                 )}
+            </div>
+
+            {/* Recommendation Cards */}
+            <div style={styles.cardsContainer}>
+                {recommendations.map((item, index) => (
+                    <div key={index} style={styles.card}>
+                        <h3>{item.title || item.name || "Untitled"}</h3>
+                        {item.description && <p>{item.description}</p>}
+                    </div>
+                ))}
             </div>
         </div>
     );
 }
 
-// Inline styles for simplicity
+// Inline styles
 const styles = {
     navbar: {
         display: "flex",
@@ -67,12 +90,27 @@ const styles = {
         padding: 0,
         margin: "10px auto",
         background: "#eee",
-        width: "200px",
+        width: "250px",
         border: "1px solid #ccc"
     },
     dropdownItem: {
         padding: "10px",
         borderBottom: "1px solid #ccc",
         cursor: "pointer"
+    },
+    cardsContainer: {
+        display: "flex",
+        justifyContent: "center",
+        flexWrap: "wrap",
+        gap: "20px",
+        marginTop: "30px"
+    },
+    card: {
+        background: "#fff",
+        padding: "20px",
+        borderRadius: "10px",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+        width: "200px",
+        textAlign: "center"
     }
 };
