@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { auth } from "./firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+
+import Home from "./pages/home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 function App() {
   const [email, setEmail] = useState("");
@@ -8,13 +13,21 @@ function App() {
   const [user, setUser] = useState(null);
 
   const signUp = async () => {
-    const userCred = await createUserWithEmailAndPassword(auth, email, password);
-    setUser(userCred.user);
+    try {
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      setUser(userCred.user);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   const signIn = async () => {
-    const userCred = await signInWithEmailAndPassword(auth, email, password);
-    setUser(userCred.user);
+    try {
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      setUser(userCred.user);
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   const logout = async () => {
@@ -23,21 +36,13 @@ function App() {
   };
 
   return (
-      <div>
-        {user ? (
-            <>
-              <h2>Welcome {user.email}</h2>
-              <button onClick={logout}>Logout</button>
-            </>
-        ) : (
-            <>
-              <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
-              <input placeholder="Password" type="password" onChange={(e) => setPassword(e.target.value)} />
-              <button onClick={signUp}>Sign Up</button>
-              <button onClick={signIn}>Sign In</button>
-            </>
-        )}
-      </div>
+      <Router>
+        <Routes>
+          <Route path="/Home" element={<Home />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Ssignup" element={<Signup />} />
+        </Routes>
+      </Router>
   );
 }
 
