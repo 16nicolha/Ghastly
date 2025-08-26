@@ -3,7 +3,7 @@ import { auth } from "./firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-import Home from "./pages/home";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
@@ -38,9 +38,9 @@ function App() {
   return (
       <Router>
         <Routes>
-          <Route path="/Home" element={<Home />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/Ssignup" element={<Signup />} />
+          {/* Fix: root route now loads Home */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </Router>
   );

@@ -24,7 +24,6 @@ export default function Home() {
                 <div style={styles.links}>
                     <Link to="/Home" style={styles.link}>Home</Link>
                     <Link to="/Login" style={styles.link}>Login</Link>
-                    <Link to="/Signup" style={styles.link}>Signup</Link>
                 </div>
             </nav>
 
@@ -54,8 +53,35 @@ export default function Home() {
             <div style={styles.cardsContainer}>
                 {recommendations.map((item, index) => (
                     <div key={index} style={styles.card}>
+                        {/* Thumbnail */}
+                        {item.thumbnail && (
+                            <img
+                                src={item.thumbnail}
+                                alt={item.title || "thumbnail"}
+                                style={styles.thumbnail}
+                            />
+                        )}
+
+                        {/* Title */}
                         <h3>{item.title || item.name || "Untitled"}</h3>
-                        {item.description && <p>{item.description}</p>}
+
+                        {/* Type */}
+                        {item.type && <p><strong>{item.type}</strong></p>}
+
+                        {/* Description */}
+                        {item.blurb && <p>{item.blurb}</p>}
+
+                        {/* Link */}
+                        {item.link && (
+                            <a
+                                href={item.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={styles.linkText}
+                            >
+                                {item.link}
+                            </a>
+                        )}
                     </div>
                 ))}
             </div>
@@ -99,18 +125,32 @@ const styles = {
         cursor: "pointer"
     },
     cardsContainer: {
-        display: "flex",
-        justifyContent: "center",
-        flexWrap: "wrap",
+        display: "grid",
+        gridTemplateColumns: "repeat(3, 1fr)", // 3 columns
         gap: "20px",
-        marginTop: "30px"
+        margin: "40px auto",
+        maxWidth: "1000px"
     },
     card: {
         background: "#fff",
         padding: "20px",
         borderRadius: "10px",
         boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-        width: "200px",
-        textAlign: "center"
+        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center"
+    },
+    thumbnail: {
+        width: "100%",
+        height: "150px",
+        objectFit: "cover",
+        borderRadius: "8px",
+        marginBottom: "10px"
+    },
+    linkText: {
+        color: "#1a0dab",
+        textDecoration: "underline",
+        wordBreak: "break-word" // makes long URLs wrap instead of overflow
     }
 };
