@@ -4,8 +4,9 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } f
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import Home from "./pages/Home";
+import Signup from "./pages/Signup"
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
 
 function App() {
   const [email, setEmail] = useState("");
@@ -41,6 +42,8 @@ function App() {
           {/* Fix: root route now loads Home */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/Signup" element={<Signup />} />
         </Routes>
       </Router>
   );

@@ -1,27 +1,71 @@
-import React from "react";
-import {Link} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
-    function Login() {
+function Login() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [user, setUser] = useState(null);
+    const auth = getAuth();
+
+    useEffect(() => {
+        // Listen for auth state changes
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
+        return () => unsubscribe();
+    }, [auth]);
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            alert("Logged in successfully!");
+        } catch (error) {
+            alert("Error logging in: " + error.message);
+        }
+    };
+
     return (
         <div>
             <nav style={styles.navbar}>
                 <h2 style={styles.logo}>Ghastly</h2>
                 <div style={styles.links}>
                     <Link to="/Home" style={styles.link}>Home</Link>
-                    <Link to="/Login" style={styles.link}>Login</Link>
+                    {!user && <Link to="/Login" style={styles.link}>Login</Link>}
                 </div>
+                {user && <span style={{ color: "white" }}>Logged in as {user.email}</span>}
             </nav>
-            <div>
+
+            <div style={{ textAlign: "center", marginTop: "50px" }}>
                 <h2>Login Page</h2>
-                <form>
-                    <input type="email" placeholder="Email" />
-                    <input type="password" placeholder="Password" />
+                <form onSubmit={handleLogin}>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <br /><br />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <br /><br />
                     <button type="submit">Login</button>
                 </form>
+                <p style={{ marginTop: "20px" }}>
+                    Don't have an account? <Link to="/Signup">Sign up here</Link>
+                </p>
             </div>
         </div>
     );
 }
+
 const styles = {
     navbar: {
         display: "flex",
@@ -33,44 +77,7 @@ const styles = {
     },
     logo: { margin: 0 },
     links: { display: "flex", gap: "15px" },
-    link: { color: "white", textDecoration: "none" },
-    header: { textAlign: "center", marginTop: "50px" },
-    dropdownContainer: { textAlign: "center", marginTop: "30px" },
-    dropdownButton: {
-        padding: "10px 20px",
-        background: "#444",
-        color: "white",
-        border: "none",
-        cursor: "pointer"
-    },
-    dropdownMenu: {
-        listStyle: "none",
-        padding: 0,
-        margin: "10px auto",
-        background: "#eee",
-        width: "250px",
-        border: "1px solid #ccc"
-    },
-    dropdownItem: {
-        padding: "10px",
-        borderBottom: "1px solid #ccc",
-        cursor: "pointer"
-    },
-    cardsContainer: {
-        display: "flex",
-        justifyContent: "center",
-        flexWrap: "wrap",
-        gap: "20px",
-        marginTop: "30px"
-    },
-    card: {
-        background: "#fff",
-        padding: "20px",
-        borderRadius: "10px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-        width: "200px",
-        textAlign: "center"
-    }
+    link: { color: "white", textDecoration: "none" }
 };
 
 export default Login;
